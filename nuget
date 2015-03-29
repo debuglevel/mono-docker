@@ -1,0 +1,2 @@
+#!/bin/sh
+exec /local/mono/bin/mono $MONO_OPTIONS /local/mono/bin/nuget.exe "$@"
