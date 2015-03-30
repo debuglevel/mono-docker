@@ -59,6 +59,7 @@ RUN apt-get update \
 
 	# fetch the basic mono standalone executable (mono is needed to compile mono)
 	#&& make get-monolite-latest \
+	&& mkdir mcs/class/lib \
 	&& cd mcs/class/lib \
 	&& wget -O- http://storage.bos.xamarin.com/mono-dist-master/latest/monolite-111-latest.tar.gz | gzip -d | tar xf - \
 	&& mv -f monolite-* monolite \
