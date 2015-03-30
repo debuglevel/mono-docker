@@ -18,9 +18,9 @@ ENV PKG_CONFIG_PATH=$MONO_PREFIX/lib/pkgconfig
 ENV PATH=$MONO_PREFIX/bin:$PATH
 
 # setting LC_ALL should avaoid problems in System.Text.EncodingHelper.GetDefaultEncoding ()
-ENV LC_ALL="en_US.UTF-8"
-ENV LANG="en_US.UTF-8"
-ENV LANGUAGE="en_US.UTF-8"
+ENV LC_ALL="en_US.utf8"
+ENV LANG="en_US.utf8"
+ENV LANGUAGE="en_US.utf8"
 
 # override the git:// based connection and use https://. some firewalls deny access otherwise.
 COPY additional-gitconfig /tmp/
@@ -46,15 +46,15 @@ RUN apt-get update \
 		wget \
 		
 	&& apt-get install -y locales \
-	&& echo "en_US.UTF-8 UTF-8" > /etc/locale.gen \
+	&& echo "en_US.utf8 utf8" > /etc/locale.gen \
 	&& locale-gen \
-	&& echo -e 'LANG="en_US.UTF-8"\n' > /etc/default/locale  \
-	&& update-locale LANG=en_US.UTF-8 \
+	&& echo -e 'LANG="en_US.utf8"\n' > /etc/default/locale  \
+	&& update-locale LANG=en_US.utf8 \
 	&& locale-gen \
 	
-	RUN export LC_ALL=en_US.UTF-8 \
-	&& export LANG=en_US.UTF-8 \
-	&& export LANGUAGE=en_US.UTF-8 \
+	RUN export LC_ALL=en_US.utf8 \
+	&& export LANG=en_US.utf8 \
+	&& export LANGUAGE=en_US.utf8 \
 	&& echo ---- \
 	&& locale \
 	&& echo ---- \
