@@ -53,11 +53,11 @@ RUN apt-get update \
 	RUN export LC_ALL=en_US.UTF-8 \
 	&& export LANG=en_US.UTF-8 \
 	&& export LANGUAGE=en_US.UTF-8 \
-	&& echo ----
+	&& echo ---- \
 	&& locale \
-	&& echo ----
+	&& echo ---- \
 	&& locale -a \
-	&& echo ----
+	&& echo ---- \
 	&& locale -m \
 	&& echo ---- \
 	&& false
