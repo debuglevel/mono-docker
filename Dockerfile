@@ -64,6 +64,7 @@ RUN apt-get update \
 	&& make get-monolite-latest \
 	
 	# make (using monolite)
+&& locale \ && locale -a && locale -m \
 	&& make EXTERNAL_MCS="${PWD}/mcs/class/lib/monolite/basic.exe" \
 	
 	# install to $MONO_PREFIX
