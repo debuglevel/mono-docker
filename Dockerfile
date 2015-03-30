@@ -62,7 +62,6 @@ RUN apt-get update \
 	&& echo ---- \
 	&& locale -m \
 	&& echo ---- \
-	&& false
 		
 	&& rm -rf /var/lib/apt/lists/* \
 	
