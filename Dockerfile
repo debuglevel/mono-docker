@@ -10,7 +10,7 @@ WORKDIR /deploy
 RUN apt-get update \
     && apt-get install -y curl unzip s3cmd $SETUP_TOOLS \
     && cd /deploy \
-    && git clone git://github.com/mono/mono --branch $MONO_VERSION  \
+    && git clone git://github.com/mono/mono   \
     && cd /deploy/mono \
     && bash ./autogen.sh  \
     && make get-monolite-latest \
