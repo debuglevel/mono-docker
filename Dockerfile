@@ -30,6 +30,12 @@ COPY nuget /local/mono/bin/nuget
 # for each RUN, docker creates a new layered image on top of the image created by the previous RUN.
 # we use one big RUN so that we can delete our temporary files at the end. this way the image remains as small as possible.
 
+RUN locale
+RUN locale -a
+RUN locale -m
+RUN crashdfsgdfsdf
+
+
 RUN apt-get update \
 	&& apt-get install -y --no-install-recommends \
 	# install packages needed to compile mono
@@ -64,7 +70,6 @@ RUN apt-get update \
 	&& make get-monolite-latest \
 	
 	# make (using monolite)
-&& locale \ && locale -a && locale -m \
 	&& make EXTERNAL_MCS="${PWD}/mcs/class/lib/monolite/basic.exe" \
 	
 	# install to $MONO_PREFIX
