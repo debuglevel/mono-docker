@@ -19,6 +19,7 @@ ENV PATH=$MONO_PREFIX/bin:$PATH
 
 # setting LC_ALL should avaoid problems in System.Text.EncodingHelper.GetDefaultEncoding ()
 ENV LC_ALL="C"
+ENV LANG="C"
 
 # override the git:// based connection and use https://. some firewalls deny access otherwise.
 COPY additional-gitconfig /tmp/
@@ -29,12 +30,6 @@ COPY nuget /local/mono/bin/nuget
 # RUN executes a command in the container.
 # for each RUN, docker creates a new layered image on top of the image created by the previous RUN.
 # we use one big RUN so that we can delete our temporary files at the end. this way the image remains as small as possible.
-
-RUN locale
-RUN locale -a
-RUN locale -m
-RUN crashdfsgdfsdf
-
 
 RUN apt-get update \
 	&& apt-get install -y --no-install-recommends \
