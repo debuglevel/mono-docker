@@ -47,11 +47,20 @@ RUN apt-get update \
 		
 	&& apt-get install -y locales \
 	&& locale-gen --purge en_US.UTF-8 \
-	&& echo -e 'LANG="en_US.UTF-8"\nLANGUAGE="en_US:en"\n' > /etc/default/locale 
+	&& echo -e 'LANG="en_US.UTF-8"\n' > /etc/default/locale  \
+	&& update-locale LANG=en_US.UTF-8
+	
 	RUN export LC_ALL=en_US.UTF-8 \
 	&& export LANG=en_US.UTF-8 \
 	&& export LANGUAGE=en_US.UTF-8 \
+	&& echo ----
 	&& locale \
+	&& echo ----
+	&& locale -a \
+	&& echo ----
+	&& locale -m \
+	&& echo ---- \
+	&& false
 		
 	&& rm -rf /var/lib/apt/lists/* \
 	
