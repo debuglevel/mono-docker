@@ -1,116 +1,32 @@
-# build and tag me:
-# docker build -t debuglevel/mono:latest . && docker tag debuglevel/mono:latest debuglevel/mono:$(date +%Y-%m-%d)
+FROM debian:wheezy
+MAINTAINER Roman Atachiants "roman@misakai.com"
 
-# the image we want to base our image on
-# we use debian, as this works pretty well and does not consume too much space.
-# ubuntu was also tested and is working - but we should not move to ubuntu unless there is a good reason.
-FROM debian:latest
+# The versions (github branches) that should be pulled and compiled
+ENV LLVM_VERSION=mono-3.4.0
+ENV MONO_VERSION=mono-3.12.0.76
 
-MAINTAINER Marc Kohaupt <debuglevel@gmail.com>
-
-# set up the environment needed to execute mono executables
-ENV MONO_PREFIX=/local/mono
-ENV DYLD_FALLBACK_LIBRARY_PATH=$MONO_PREFIX/lib:$DYLD_LIBRARY_FALLBACK_PATH
-ENV LD_LIBRARY_PATH=$MONO_PREFIX/lib:$LD_LIBRARY_PATH
-ENV C_INCLUDE_PATH=$MONO_PREFIX/include
-ENV ACLOCAL_PATH=$MONO_PREFIX/share/aclocal
-ENV PKG_CONFIG_PATH=$MONO_PREFIX/lib/pkgconfig
-ENV PATH=$MONO_PREFIX/bin:$PATH
-
-# setting LC_ALL should avaoid problems in System.Text.EncodingHelper.GetDefaultEncoding ()
-ENV LC_ALL="en_US.utf8"
-ENV LANG="en_US.utf8"
-ENV LANGUAGE="en_US.utf8"
-
-# override the git:// based connection and use https://. some firewalls deny access otherwise.
-COPY additional-gitconfig /tmp/
-
-# shell script wrapper for nuget as binfmt does not work in docker (you cannot execute "./something.exe" but must use "mono something.exe")
-COPY nuget /local/mono/bin/nuget
-
-# RUN executes a command in the container.
-# for each RUN, docker creates a new layered image on top of the image created by the previous RUN.
-# we use one big RUN so that we can delete our temporary files at the end. this way the image remains as small as possible.
+# The dependencies needed for the compilation process, they will be deleted once the docker image is baked
+ENV SETUP_TOOLS="git autoconf libtool automake build-essential mono-devel gettext python"
+WORKDIR /deploy
 
 RUN apt-get update \
-	&& apt-get install -y --no-install-recommends \
-	# install packages needed to compile mono
-		autoconf \
-		automake \
-		build-essential \
-		git \
-		gettext \
-		libtool \
-	# install packages needed to run mono and other tools
-		ca-certificates \
-		wget \
-		
-	&& apt-get install -y locales \
-	&& echo "en_US.utf8 utf8" > /etc/locale.gen \
-	&& locale-gen \
-	&& echo -e 'LANG="en_US.utf8"\n' > /etc/default/locale  \
-	&& update-locale LANG=en_US.utf8 \
-	&& locale-gen \
-	
-	RUN export LC_ALL=en_US.utf8 \
-	&& export LANG=en_US.utf8 \
-	&& export LANGUAGE=en_US.utf8 \
-	&& echo ---- \
-	&& locale \
-	&& echo ---- \
-	&& locale -a \
-	&& echo ---- \
-	&& locale -m \
-	&& echo ---- \
-		
-	&& rm -rf /var/lib/apt/lists/* \
-	
-	# fetch latest mono sources (only the debuglevel_patches branch without any history)
-	&& mkdir -p /local/mono-compile \
-	&& cd /local/mono-compile \
-	&& git clone -v --progress --depth 1 --branch debuglevel_patches --single-branch https://github.com/debuglevel/mono.git \
-	&& cd /local/mono-compile/mono \
-    
-	&& cat /tmp/additional-gitconfig >> ~/.gitconfig \
-	&& rm /tmp/additional-gitconfig \
-	
-	# initialize and fetch the submodules
-	&& git submodule update --init --recursive \
-	
-	# do autogen
-	&& ./autogen.sh --prefix=$MONO_PREFIX \
+    && apt-get install -y curl unzip s3cmd $SETUP_TOOLS \
+    && apt-key adv --keyserver pgp.mit.edu --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF \
+    && git clone git://github.com/mono/llvm.git --branch $LLVM_VERSION \
+    && cd /deploy/llvm \
+    && ./configure --enable-optimized --enable-targets="x86 x86_64" \
+    && make \
+    && make install \
+    && cd /deploy \
+    && git clone git://github.com/mono/mono --branch $MONO_VERSION  \
+    && cd /deploy/mono \
+    && bash ./autogen.sh --enable-llvm=yes \
+    && make get-monolite-latest \
+    && make \
+    && make install \
+    && apt-get remove -y --purge $SETUP_TOOLS \
+    && apt-get autoremove -y \
+    && rm -rf /deploy \
+    && mkdir /app
 
-	# fetch the basic mono standalone executable (mono is needed to compile mono)
-	&& make get-monolite-latest \
-	
-	# make (using monolite)
-	&& make EXTERNAL_MCS="${PWD}/mcs/class/lib/monolite/basic.exe" \
-	
-	# install to $MONO_PREFIX
-	&& make install \
-	
-	# remove source files
-	&& rm -rf /local/mono-compile/mono \
-	
-	# install nuget
-	&& cd /local/mono/bin \
-	&& wget http://nuget.org/nuget.exe \
-	&& chmod +x nuget.exe \
-	&& chmod +x nuget \
-	
-	# import SSL certs (needed by NuGet)
-	&& mozroots --import --machine --sync \
-	&& yes | certmgr -ssl -m https://go.microsoft.com \
-	&& yes | certmgr -ssl -m https://nugetgallery.blob.core.windows.net \
-	&& yes | certmgr -ssl -m https://nuget.org \
-
-	# remove packages which were used to compile mono but are not needed anymore
-	&& apt-get remove -y \
-		autoconf \
-		automake \
-		build-essential \
-		git \
-		gettext \
-		libtool \
-	&& apt-get autoremove -y \
-	&& apt-get clean
+WORKDIR /app
