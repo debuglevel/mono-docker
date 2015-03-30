@@ -18,8 +18,9 @@ ENV PKG_CONFIG_PATH=$MONO_PREFIX/lib/pkgconfig
 ENV PATH=$MONO_PREFIX/bin:$PATH
 
 # setting LC_ALL should avaoid problems in System.Text.EncodingHelper.GetDefaultEncoding ()
-ENV LC_ALL="C"
-ENV LANG="C"
+ENV LC_ALL="en_US.UTF-8"
+ENV LANG="en_US.UTF-8"
+ENV LANGUAGE="en_US.UTF-8"
 
 # override the git:// based connection and use https://. some firewalls deny access otherwise.
 COPY additional-gitconfig /tmp/
@@ -43,6 +44,14 @@ RUN apt-get update \
 	# install packages needed to run mono and other tools
 		ca-certificates \
 		wget \
+		
+	&& apt-get install -y locales \
+	&& locale-gen --purge en_US.UTF-8 \
+	&& echo -e 'LANG="en_US.UTF-8"\nLANGUAGE="en_US:en"\n' > /etc/default/locale 
+	RUN export LC_ALL=en_US.UTF-8 \
+	&& export LANG=en_US.UTF-8 \
+	&& export LANGUAGE=en_US.UTF-8 \
+	&& locale \
 		
 	&& rm -rf /var/lib/apt/lists/* \
 	
