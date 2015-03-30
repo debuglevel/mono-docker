@@ -46,9 +46,11 @@ RUN apt-get update \
 		wget \
 		
 	&& apt-get install -y locales \
-	&& locale-gen --purge en_US.UTF-8 \
+	&& echo "en_US.UTF-8 UTF-8" > /etc/locale.gen \
+	&& locale-gen \
 	&& echo -e 'LANG="en_US.UTF-8"\n' > /etc/default/locale  \
-	&& update-locale LANG=en_US.UTF-8
+	&& update-locale LANG=en_US.UTF-8 \
+	&& locale-gen \
 	
 	RUN export LC_ALL=en_US.UTF-8 \
 	&& export LANG=en_US.UTF-8 \
