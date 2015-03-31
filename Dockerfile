@@ -4,7 +4,7 @@
 # the image we want to base our image on
 # we use debian, as this works pretty well and does not consume too much space.
 # ubuntu was also tested and is working - but we should not move to ubuntu unless there is a good reason.
-FROM debian:latest
+FROM ubuntu:latest
 
 MAINTAINER Marc Kohaupt <debuglevel@gmail.com>
 
@@ -58,11 +58,11 @@ RUN apt-get update \
 	&& ./autogen.sh --prefix=$MONO_PREFIX \
 
 	# fetch the basic mono standalone executable (mono is needed to compile mono)
-	#&& make get-monolite-latest \
-	&& mkdir mcs/class/lib \
-	&& cd mcs/class/lib \
-	&& wget -O- http://storage.bos.xamarin.com/mono-dist-master/latest/monolite-111-latest.tar.gz | gzip -d | tar xf - \
-	&& mv -f monolite-* monolite \
+	&& make get-monolite-latest \
+#	&& mkdir mcs/class/lib \
+#	&& cd mcs/class/lib \
+#	&& wget -O- http://storage.bos.xamarin.com/mono-dist-master/latest/monolite-111-latest.tar.gz | gzip -d | tar xf - \
+#	&& mv -f monolite-* monolite \
 	&& cd /local/mono-compile/mono \
 	
 	# make (using monolite)
