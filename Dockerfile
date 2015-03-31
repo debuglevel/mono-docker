@@ -48,7 +48,9 @@ RUN apt-get update \
 #	&& git clone -v --progress --depth 1 --branch debuglevel_patches --single-branch https://github.com/debuglevel/mono.git \
     && git clone -v --progress https://github.com/mono/mono.git \
 	&& cd /local/mono-compile/mono \
-    && git reset --hard 
+	
+	#115
+    && git reset --hard 753229c72dd9f2b63beb097700e350164b8807c2 \
     
 	&& cat /tmp/additional-gitconfig >> ~/.gitconfig \
 	&& rm /tmp/additional-gitconfig \
