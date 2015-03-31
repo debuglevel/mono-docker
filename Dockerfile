@@ -45,7 +45,9 @@ RUN apt-get update \
 	# fetch latest mono sources (only the debuglevel_patches branch without any history)
 	&& mkdir -p /local/mono-compile \
 	&& cd /local/mono-compile \
-	&& git clone -v --progress --depth 1 --branch debuglevel_patches --single-branch https://github.com/debuglevel/mono.git \
+#	&& git clone -v --progress --depth 1 --branch debuglevel_patches --single-branch https://github.com/debuglevel/mono.git \
+    && git clone -v --progress https://github.com/mono/mono.git \
+    && git reset --hard 
 	&& cd /local/mono-compile/mono \
     
 	&& cat /tmp/additional-gitconfig >> ~/.gitconfig \
