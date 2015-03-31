@@ -55,6 +55,9 @@ RUN apt-get update \
     #113
     && git reset --hard dfebf124e54e11ef4de85addffd8d9df102e859b \
     
+    #114
+    && git reset --hard 519ddb9895af5639de5ba0361af54a8d585c4070  \
+    
 	&& cat /tmp/additional-gitconfig >> ~/.gitconfig \
 	&& rm /tmp/additional-gitconfig \
 	
