@@ -16,6 +16,9 @@ ENV C_INCLUDE_PATH=$MONO_PREFIX/include
 ENV ACLOCAL_PATH=$MONO_PREFIX/share/aclocal
 ENV PKG_CONFIG_PATH=$MONO_PREFIX/lib/pkgconfig
 ENV PATH=$MONO_PREFIX/bin:$PATH
+ENV LANG=C
+ENV LC_ALL=C
+
 
 # override the git:// based connection and use https://. some firewalls deny access otherwise.
 COPY additional-gitconfig /tmp/
