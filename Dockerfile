@@ -46,7 +46,7 @@ RUN echo starting \
 		ca-certificates \
 		wget \
 	# full mono as replacement for monolite
-		mono-devel
+		mono-devel \
 		
 	&& rm -rf /var/lib/apt/lists/* \
 	
