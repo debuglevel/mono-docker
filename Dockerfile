@@ -71,7 +71,7 @@ RUN echo starting \
 	&& ./autogen.sh --prefix=$MONO_PREFIX \
 
 	# fetch the basic mono standalone executable (mono is needed to compile mono)
-	#&& make get-monolite-latest \
+	&& make get-monolite-latest \
 	
 	# make (using monolite)
 	#&& make EXTERNAL_MCS="${PWD}/mcs/class/lib/monolite/basic.exe" \
