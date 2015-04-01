@@ -103,6 +103,5 @@ RUN echo starting \
 		git \
 		gettext \
 		libtool \
-		mono-devel\
 	&& apt-get autoremove -y \
 	&& apt-get clean
