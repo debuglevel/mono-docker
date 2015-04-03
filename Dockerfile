@@ -75,7 +75,7 @@ RUN echo starting \
 	
 	# make (using monolite)
 	#&& make EXTERNAL_MCS="${PWD}/mcs/class/lib/monolite/basic.exe" \
-	&& time make \
+	&& time make -j 2 \
 	
 	# install to $MONO_PREFIX
 	&& make install \
