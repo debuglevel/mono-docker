@@ -47,6 +47,8 @@ RUN echo starting \
 		wget \
 	# full mono as replacement for monolite
 #		mono-devel=3.8.0-0xamarin1 \
+	# temporary for benchmark
+		time \
 		
 	&& rm -rf /var/lib/apt/lists/* \
 	
@@ -75,7 +77,7 @@ RUN echo starting \
 	
 	# make (using monolite)
 	#&& make EXTERNAL_MCS="${PWD}/mcs/class/lib/monolite/basic.exe" \
-	&& time make -j 8 \
+	&& time make -j 1 \
 	
 	# install to $MONO_PREFIX
 	&& make install \
