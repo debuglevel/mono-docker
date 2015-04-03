@@ -29,7 +29,7 @@ COPY nuget /local/mono/bin/nuget
 
 RUN echo starting \
 
-	# mono binaries as monolite somehow does not work on Docker Hub at the moment
+#	# mono binaries as monolite somehow does not work on Docker Hub at the moment
 #	&& apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF \
 #	&& echo "deb http://download.mono-project.com/repo/debian wheezy main" > /etc/apt/sources.list.d/mono-xamarin.list \
 	
@@ -45,7 +45,7 @@ RUN echo starting \
 	# install packages needed to run mono and other tools
 		ca-certificates \
 		wget \
-	# full mono as replacement for monolite
+#	# full mono as replacement for monolite
 #		mono-devel=3.8.0-0xamarin1 \
 	# temporary for benchmark
 		time \
@@ -59,8 +59,8 @@ RUN echo starting \
 	# fetch latest mono sources (only the debuglevel_patches branch without any history)
 	&& mkdir -p /local/mono-compile \
 	&& cd /local/mono-compile \
-#	&& git clone -v --progress --depth 1 --branch debuglevel_patches --single-branch https://github.com/debuglevel/mono.git \
-	&& git clone -v --progress https://github.com/mono/mono.git \
+	&& git clone -v --progress --depth 1 --branch debuglevel_patches --single-branch https://github.com/debuglevel/mono.git \
+#	&& git clone -v --progress https://github.com/mono/mono.git \
 	&& cd /local/mono-compile/mono \
     
 	&& cat /tmp/additional-gitconfig >> ~/.gitconfig \
@@ -75,9 +75,9 @@ RUN echo starting \
 	# fetch the basic mono standalone executable (mono is needed to compile mono)
 	&& make get-monolite-latest \
 	
-	# make (using monolite)
-	#&& make EXTERNAL_MCS="${PWD}/mcs/class/lib/monolite/basic.exe" \
-	&& time make -j 36 \ 
+	# make
+	&& echo "Starting make with $(($(nproc)+1)) jobs..." \
+	&& time make -j $(($(nproc)+1)) \ 
 	
 	# install to $MONO_PREFIX
 	&& make install \
